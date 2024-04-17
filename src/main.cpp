@@ -1,106 +1,79 @@
 #include <iostream>
 #include <fstream>
-#include <string>
-#include <vector>
-using namespace std;
-
-int posMin(vector<int> c, vector<int> caminho);
-void tracarCaminho(vector<int> &caminho, int cidade, int ordem);
+#include "Cidade.hpp"
+#include "Visitas.hpp"
 
 int main(){
 
-    vector<vector<int>> distCidades;
-
-    vector<int> caminho;
-
-    int nCidades;
-
     std::ifstream file("./test/cities.txt");
 
+    int nCidades;
+    int inicio;
+
+    std::vector<Cidade> cidades;
+
     file >> nCidades;
+    file >> inicio;
 
-    caminho.resize(nCidades);
-    for(int i = 0; i < nCidades; i++){
+    for (int i = 0; i < nCidades; i++){ //Leitura do arquivo
+        int x, y;
+        file >> x;
+        file >> y;
 
-        vector<int> c;
-        c.resize(nCidades);
-        for(int j = i; j < nCidades; j++){
-            
-            if(i != j){
-                file >> c[j];
-            }
-            else
-                c[j] = 0;
-
-            
-        }
-        for(int j = i; j > 0; j--)
-            c[i - j] = distCidades[i - j][i];
-
-        caminho[i] = -1;
-        distCidades.push_back(c);
+        cidades.push_back(Cidade(x,y));
     }
+    Visitas visitas = Visitas(nCidades,inicio, cidades);
 
-    for(vector<int>dist : distCidades){
-        for (int d : dist){
-            cout << d << " ";
+    visitas.tracarCaminho();
+
+    std::vector<Visitas> v;
+
+    double media = 0;
+    double pesoMax = 0, pesoMin = 0;
+    int melC = 0, pioC = 0;
+
+    for(int i = 0; i < nCidades; i++){ //Calcula o caminho com base em cada cidade inicial
+        v.push_back(Visitas(nCidades, i, cidades));
+        v[i].tracarCaminho();
+        double peso = 0;
+        std::vector<int> c = v[i].getCaminho();
+        for (int j = 0; j < nCidades; j++){
+            peso += v[i].getDistancia(c[j], c[j+1]);
         }
-        cout << endl;
-    }
-    
-    bool rodando = true;
-    int ultimaC = 0;
-
-    caminho[0] = 0;
-
-    vector<int> path;
-    path.push_back(0);
-
-    for (int i = 1; i < nCidades; i++)
-    {
-        int minPos = posMin(distCidades[ultimaC], caminho);
-        tracarCaminho(caminho, minPos, i);
-        // caminho[minPos] = i;
-        // cout << distCidades[ultimaC][minPos] << " ";
-
-        for(int c : caminho){
-        cout << c << " ";
-        }
-        cout << endl;
+        media += peso;
+        pioC = peso > pesoMax ? i:pioC;
+        pesoMax = peso > pesoMax ? peso:pesoMax;
         
-        ultimaC = minPos;
-        path.push_back(ultimaC);
+        melC = peso < pesoMin || pesoMin == 0? i:melC;
+        pesoMin = peso < pesoMin || pesoMin == 0? peso:pesoMin;
+        
     }
-    for(int c : path){
-        cout << c << " ";
-    }
-    int peso = 0;
-    
-    for(int i = 0; i < nCidades - 1; i++){
-        peso += distCidades[path[i]][path[i+1]];
-    }
-    peso += distCidades[path[nCidades-1]][0];
+    media /= nCidades;
+    std::cout<<"Min: "<<pesoMin << "\n";
+    std::cout<<"Max: "<<pesoMax << "\n";
+    std::cout<<"Med: "<<media << "\n";
 
-    cout<< endl << peso << endl;
+    std::cout<<"Melhor começo: "<< melC << std::endl;
+    std::cout<<"Pior começo: "<< pioC << std::endl;
+
+    // std::cout<<"Melhor caminho: ";
+    // for (int c : v[melC].getCaminho())
+    //     std::cout << c << " ";
+
+    // std::cout<<"\nPior caminho: ";
+    // for (int c : v[pioC].getCaminho())
+    //     std::cout << c << " ";
+    // std::cout<<"\n";
+
+    // double peso = 0;
+    // std::vector<int> c = visitas.getCaminho();
+    // for (int i = 0; i < nCidades; i++){
+    //     peso += visitas.getDistancia(c[i], c[i+1]);
+    //     std::cout << c[i] << " ";
+    // }
+    // std::cout<< c[nCidades] << std::endl << peso << std::endl;
+
+    file.close();
 
     return EXIT_SUCCESS;
-}
-void tracarCaminho(vector<int> &caminho, int cidade, int ordem){
-    caminho[cidade] = ordem;
-}
-
-int posMin(vector<int> dist, vector<int> caminho){
-
-    int min = 0;
-
-    for(int i = 0; i < dist.size(); i++){
-        
-        // cout << (caminho[i] < 0) << " " << (dist[min] > dist[i] || min == 0);
-        // cout << endl;
-        if(caminho[i] < 0 && ((dist[min] > dist[i] || min == 0) && dist[i] != 0)){
-            min = i;
-        }
-    }
-
-    return min;
 }

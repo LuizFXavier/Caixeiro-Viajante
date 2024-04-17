@@ -1,2 +1,8 @@
 main
 .vscode
+CMakeFiles
+cmake_install.cmake
+CMakeCache.txt
+Makefile
+tsp
+test/main.cpp

@@ -24,21 +24,21 @@ int main(){
     }
     Visitas visitas = Visitas(nCidades,inicio, cidades);
 
-    visitas.tracarCaminho();
-
-    std::vector<Visitas> v;
+    visitas.guardarDistancias(cidades);
 
     double media = 0;
     double pesoMax = 0, pesoMin = 0;
     int melC = 0, pioC = 0;
 
     for(int i = 0; i < nCidades; i++){ //Calcula o caminho com base em cada cidade inicial
-        v.push_back(Visitas(nCidades, i, cidades));
-        v[i].tracarCaminho();
+        visitas.reiniciarCaminho(i);
+        visitas.tracarCaminho();
+        std::cout<<"Inicio em "<< i << "\n";
         double peso = 0;
-        std::vector<int> c = v[i].getCaminho();
+        std::vector<int> c = visitas.getCaminho();
+        
         for (int j = 0; j < nCidades; j++){
-            peso += v[i].getDistancia(c[j], c[j+1]);
+            peso += visitas.getDistancia(c[j], c[j+1]);
         }
         media += peso;
         pioC = peso > pesoMax ? i:pioC;
@@ -48,17 +48,16 @@ int main(){
         pesoMin = peso < pesoMin || pesoMin == 0? peso:pesoMin;
         
     }
+
     media /= nCidades;
-    std::cout<<"Min: "<<pesoMin << "\n";
+    std::cout<<"\nMin: "<<pesoMin << "\n";
     std::cout<<"Max: "<<pesoMax << "\n";
     std::cout<<"Med: "<<media << "\n";
 
     std::cout<<"Melhor começo: "<< melC << std::endl;
     std::cout<<"Pior começo: "<< pioC << std::endl;
 
-    // std::cout<<"Melhor caminho: ";
-    // for (int c : v[melC].getCaminho())
-    //     std::cout << c << " ";
+    
 
     // std::cout<<"\nPior caminho: ";
     // for (int c : v[pioC].getCaminho())

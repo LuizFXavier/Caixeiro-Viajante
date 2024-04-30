@@ -5,7 +5,7 @@
 
 int main(){
 
-    std::ifstream file("./test/cities.txt");
+    std::ifstream file("../test/cities.txt");
 
     int nCidades;
     int inicio;
@@ -56,21 +56,6 @@ int main(){
 
     std::cout<<"Melhor começo: "<< melC << std::endl;
     std::cout<<"Pior começo: "<< pioC << std::endl;
-
-    
-
-    // std::cout<<"\nPior caminho: ";
-    // for (int c : v[pioC].getCaminho())
-    //     std::cout << c << " ";
-    // std::cout<<"\n";
-
-    // double peso = 0;
-    // std::vector<int> c = visitas.getCaminho();
-    // for (int i = 0; i < nCidades; i++){
-    //     peso += visitas.getDistancia(c[i], c[i+1]);
-    //     std::cout << c[i] << " ";
-    // }
-    // std::cout<< c[nCidades] << std::endl << peso << std::endl;
 
     file.close();
 

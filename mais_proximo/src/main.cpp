@@ -13,7 +13,6 @@ int main(){
     std::vector<Cidade> cidades;
 
     file >> nCidades;
-    file >> inicio;
 
     for (int i = 0; i < nCidades; i++){ //Leitura do arquivo
         int x, y;
@@ -22,7 +21,7 @@ int main(){
 
         cidades.push_back(Cidade(x,y));
     }
-    Visitas visitas = Visitas(nCidades,inicio, cidades);
+    Visitas visitas = Visitas(nCidades, cidades);
 
     visitas.guardarDistancias(cidades);
 
@@ -33,7 +32,7 @@ int main(){
     for(int i = 0; i < nCidades; i++){ //Calcula o caminho com base em cada cidade inicial
         visitas.reiniciarCaminho(i);
         visitas.tracarCaminho();
-        std::cout<<"Inicio em "<< i << "\n";
+        // std::cout<<"Inicio em "<< i << "\n";
         double peso = 0;
         std::vector<int> c = visitas.getCaminho();
         
@@ -49,13 +48,21 @@ int main(){
         
     }
 
-    media /= nCidades;
-    std::cout<<"\nMin: "<<pesoMin << "\n";
-    std::cout<<"Max: "<<pesoMax << "\n";
-    std::cout<<"Med: "<<media << "\n";
+    // media /= nCidades;
+    // std::cout<<"Max: "<<pesoMax << "\n";
+    // std::cout<<"Med: "<<media << "\n";
 
-    std::cout<<"Melhor começo: "<< melC << std::endl;
-    std::cout<<"Pior começo: "<< pioC << std::endl;
+    // std::cout<<"Melhor começo: "<< melC << std::endl;
+    // std::cout<<"Pior começo: "<< pioC << std::endl;
+
+    visitas.reiniciarCaminho(melC);
+    visitas.tracarCaminho();
+
+    for (int i : visitas.getCaminho()){
+        std::cout << i << " ";
+    }
+    std::cout<< "\n";
+    std::cout<<"Distância: "<<pesoMin << "\n";
 
     file.close();
 
